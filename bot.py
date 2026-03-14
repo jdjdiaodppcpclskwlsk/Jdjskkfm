@@ -10,7 +10,8 @@ tok = "8601229427:AAGuSTOHuPo0dSIZnJ0efdoAh8acNVqySBc"
 Own = 7306010609
 
 b = Bot(token=tok)
-d = Dispatcher(storage=MemoryStorage())
+storage = MemoryStorage()
+d = Dispatcher(storage=storage)
 
 def conn():
     return sqlite3.connect("BOT.db")
@@ -185,9 +186,9 @@ async def _no(c: CallbackQuery):
     k.execute("SELECT tipok FROM zapis WHERE id=?", (idd,)); own = k.fetchone()
     con.commit(); con.close()
     if own:
-        try: await b.send_message(own[0], "❌ Твоя заявка отклонена.")
+        try: await b.send_message(own[0], " Твоя заявка отклонена.")
         except: pass
-    await c.message.edit_text("❌ Отклонено.", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data=f"al_ojid_{pg}")]]))
+    await c.message.edit_text(" Отклонено.", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data=f"al_ojid_{pg}")]]))
 
 async def main():
     podnyal(); await d.start_polling(b)
