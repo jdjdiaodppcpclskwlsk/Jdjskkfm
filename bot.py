@@ -51,50 +51,50 @@ async def _a(m: Message):
     await m.answer("Админ-панель:", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Заявления", callback_data="amenu")]]))
 
 @d.callback_query(F.data == "die")
-async def _die(c: CallbackQuery, st: FSMContext):
-    await st.clear(); await c.message.edit_text("Оспаривание решений:", reply_markup=mm())
+async def _die(c: CallbackQuery, state: FSMContext):
+    await state.clear(); await c.message.edit_text("Оспаривание решений:", reply_markup=mm())
 
 @d.callback_query(F.data == "gmain")
-async def _gm(c: CallbackQuery, st: FSMContext):
-    await st.clear(); await c.message.edit_text("Оспаривание решений:", reply_markup=mm())
+async def _gm(c: CallbackQuery, state: FSMContext):
+    await state.clear(); await c.message.edit_text("Оспаривание решений:", reply_markup=mm())
 
 @d.callback_query(F.data == "f0")
-async def _f0(c: CallbackQuery, st: FSMContext):
-    await st.set_state(FF.q1); await c.message.edit_text("Введи название заявления:", reply_markup=xod())
+async def _f0(c: CallbackQuery, state: FSMContext):
+    await state.set_state(FF.q1); await c.message.edit_text("Введи название заявления:", reply_markup=xod())
 
 @d.message(FF.q1)
-async def _q1(m: Message, st: FSMContext):
-    await st.update_data(t=m.text); await st.set_state(FF.q2)
+async def _q1(m: Message, state: FSMContext):
+    await state.update_data(t=m.text); await state.set_state(FF.q2)
     await m.answer("Какое наказание тебе выдали и за что:", reply_markup=xod())
 
 @d.message(FF.q2)
-async def _q2(m: Message, st: FSMContext):
-    await st.update_data(p=m.text); await st.set_state(FF.q3)
+async def _q2(m: Message, state: FSMContext):
+    await state.update_data(p=m.text); await state.set_state(FF.q3)
     await m.answer("Опиши ситуацию подробно:", reply_markup=xod())
 
 @d.message(FF.q3)
-async def _q3(m: Message, st: FSMContext):
-    await st.update_data(s=m.text); await st.set_state(FF.q4)
+async def _q3(m: Message, state: FSMContext):
+    await state.update_data(s=m.text); await state.set_state(FF.q4)
     await m.answer("Что ты считаешь несправедливым и какое решение ты хочешь:", reply_markup=xod())
 
 @d.message(FF.q4)
-async def _q4(m: Message, st: FSMContext):
-    await st.update_data(w=m.text); dd = await st.get_data()
-    await st.set_state(FF.fin)
+async def _q4(m: Message, state: FSMContext):
+    await state.update_data(w=m.text); dd = await state.get_data()
+    await state.set_state(FF.fin)
     await m.answer(f"📄 Твоя заявка:\n\n<b>Название:</b> {dd['t']}\n<b>Наказание:</b> {dd['p']}\n<b>Ситуация:</b> {dd['s']}\n<b>Что хочу:</b> {dd['w']}", reply_markup=end_kb(), parse_mode="HTML")
 
 @d.callback_query(F.data == "bk", FF.fin)
-async def _bk(c: CallbackQuery, st: FSMContext):
-    await st.set_state(FF.q4); await c.message.edit_text("Что ты считаешь несправедливым и какое решение ты хочешь:", reply_markup=xod())
+async def _bk(c: CallbackQuery, state: FSMContext):
+    await state.set_state(FF.q4); await c.message.edit_text("Что ты считаешь несправедливым и какое решение ты хочешь:", reply_markup=xod())
 
 @d.callback_query(F.data == "snd", FF.fin)
-async def _snd(c: CallbackQuery, st: FSMContext):
-    dd = await st.get_data()
+async def _snd(c: CallbackQuery, state: FSMContext):
+    dd = await state.get_data()
     nik = c.from_user.username or c.from_user.first_name
     uid = c.from_user.id
     con = conn(); k = con.cursor()
     k.execute("INSERT INTO zapis (tipok, nik, titul, palka, chto_bylo, hochet) VALUES (?,?,?,?,?,?)", (uid, nik, dd['t'], dd['p'], dd['s'], dd['w']))
-    con.commit(); con.close(); await st.clear()
+    con.commit(); con.close(); await state.clear()
     await c.message.edit_text("Заявка отправлена", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data="gmain")]]))
 
 @d.callback_query(F.data == "ml")
