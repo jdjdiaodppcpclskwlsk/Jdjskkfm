@@ -41,8 +41,8 @@ def end_kb():
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Отправить", callback_data="snd"), InlineKeyboardButton(text="Назад", callback_data="bk")]])
 
 @d.message(Command("start"))
-async def _s(m: Message, st: FSMContext):
-    await st.clear(); await m.answer("Оспаривание решений:", reply_markup=mm())
+async def _s(m: Message, state: FSMContext):
+    await state.clear(); await m.answer("Оспаривание решений:", reply_markup=mm())
 
 @d.message(Command("admin"))
 async def _a(m: Message):
