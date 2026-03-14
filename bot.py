@@ -191,7 +191,9 @@ async def _no(c: CallbackQuery):
     await c.message.edit_text(" Отклонено.", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data=f"al_ojid_{pg}")]]))
 
 async def main():
-    podnyal(); await d.start_polling(b)
+    podnyal()
+    print(" Бот пашет...")
+    await d.start_polling(b)
 
 if __name__ == "__main__":
     asyncio.run(main())
